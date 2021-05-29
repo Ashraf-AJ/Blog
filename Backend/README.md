@@ -1,4 +1,4 @@
-To run the backend you must have `python 3.6+` installed, and do the following:<br>
+To run the backend you must have python installed (currently using `python 3.8.2`), and do the following:<br>
 On **Windows**:<br>
 
 - `cd` into `Backend` directory<br>
@@ -10,7 +10,10 @@ On **Windows**:<br>
   `pip install -r requirements\dev.txt`<br>
 - Create a file named `.flaskenv` and set the following variables:<br>
 
-```shell
-FLASK_APP=app.py
-FLASK_ENV=development
-```
+  ```shell
+  FLASK_APP=app.py
+  FLASK_ENV=development
+  ```
+
+- Run the development server:<br>
+  `flask run`
