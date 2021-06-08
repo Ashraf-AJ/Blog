@@ -5,7 +5,7 @@ from api import db
 class AutoName(Enum):
     """override automatic-value generation"""
 
-    def _generate_next_value(name, start, count, last_values):
+    def _generate_next_value_(name, start, count, last_values):
         """
         the enum's value becomes its own name:
             class C(AutoName):
@@ -52,6 +52,7 @@ roles_permissions = {
 def create_model_object(model, **data):
     obj = model(**data)
     db.session.add(obj)
+    db.session.commit()
     return obj
 
 
