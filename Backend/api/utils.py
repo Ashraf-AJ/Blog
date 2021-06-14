@@ -76,3 +76,9 @@ def insert_roles_permissions(role_model, permission_model):
             )
             role_object.permissions.append(permission_object)
     db.session.commit()
+
+
+# Managing database models' objects
+def save(obj):
+    db.session.add(obj)
+    db.session.commit()

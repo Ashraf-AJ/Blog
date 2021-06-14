@@ -8,6 +8,8 @@ class TimestampMixin:
     created_at = db.Column(
         db.DateTime, nullable=False, default=datetime.utcnow
     )
+    # TODO
+    # add default value to updated_at
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
 
@@ -47,14 +49,14 @@ class User(TimestampMixin, db.Model):
         back_populates="author",
         cascade="all, delete-orphan",
     )
-    following = db.relationship(
+    _following = db.relationship(
         "Follow",
         foreign_keys=[Follow.follower_id],
         lazy=True,
         backref=db.backref("follower", lazy="joined"),
         cascade="all, delete-orphan",
     )
-    followers = db.relationship(
+    _followers = db.relationship(
         "Follow",
         foreign_keys=[Follow.followed_id],
         lazy=True,
@@ -106,6 +108,36 @@ class User(TimestampMixin, db.Model):
             ).first()
             db.session.delete(f)
             db.session.commit()
+
+    @property
+    def followers_count(self):
+        return Follow.query.filter_by(followed_id=self.id).count()
+
+    @property
+    def following_count(self):
+        return Follow.query.filter_by(follower_id=self.id).count()
+
+    @property
+    def followers(self):
+        return (
+            User.query.join(
+                Follow,
+                User.id == Follow.follower_id,
+            )
+            .filter(self.id == Follow.followed_id)
+            .all()
+        )
+
+    @property
+    def following(self):
+        return (
+            User.query.join(
+                Follow,
+                User.id == Follow.followed_id,
+            )
+            .filter(self.id == Follow.follower_id)
+            .all()
+        )
 
 
 # association table

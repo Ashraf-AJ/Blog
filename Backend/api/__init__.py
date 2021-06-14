@@ -14,4 +14,8 @@ def create_app(config_name):
     db.init_app(app)
     migrate.init_app(app, db)
 
+    from .graphql import graphql as graphql_blueprint
+
+    app.register_blueprint(graphql_blueprint)
+
     return app
