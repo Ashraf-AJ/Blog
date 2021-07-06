@@ -1,24 +1,25 @@
 import os
-from pathlib import Path
+from api.cache.config import CacheDevelopmentConfig
+from api.auth.config import Config as AuthConfig
+from api.database.config import (
+    Config as DatabaseConfig,
+    DatabaseDevelopmentConfig,
+    DatabaseTestingConfig,
+)
 
-BASE_DIR = Path(__file__).resolve().parent
 
-
-class Config:
+class Config(AuthConfig, DatabaseConfig):
     SECRET_KEY = os.environ.get("SECRET_KEY") or "ThisIsASecret"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
-class DevelopmentConfig(Config):
+class DevelopmentConfig(
+    Config, CacheDevelopmentConfig, DatabaseDevelopmentConfig
+):
     DEVELOPMENT = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + str(
-        BASE_DIR.joinpath("dev_data.sqlite")
-    )
 
 
-class TestingConfig(Config):
+class TestingConfig(Config, DatabaseTestingConfig):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite://"
 
 
 config = {

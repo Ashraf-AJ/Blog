@@ -1,8 +1,8 @@
 import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from api.models import User as UserModel
-from api import utils
+from api.database.models import User as UserModel
+from api.database import utils as db_utils
 
 
 class User(SQLAlchemyObjectType):
@@ -53,8 +53,8 @@ class RegisterUser(graphene.Mutation):
     user = graphene.Field(User, description="The registered user")
 
     def mutate(instance, info, **input):
-        user = UserModel(**input)
-        utils.save(user)
+        user = db_utils.create(UserModel, **input)
+        db_utils.save(user)
 
         return RegisterUser(user=user)
 

@@ -1,7 +1,7 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from api import db
-from .utils import Permissions, Roles
+from .seeders import Permissions, Roles
 
 
 class TimestampMixin:
