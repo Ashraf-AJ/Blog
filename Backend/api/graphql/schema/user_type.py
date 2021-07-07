@@ -19,6 +19,7 @@ class User(SQLAlchemyObjectType):
     followers = relay.ConnectionField(lambda: FollowersConnection)
     following_count = graphene.Field(graphene.Int)
     following = relay.ConnectionField(lambda: FollowingConnection)
+    posts = relay.ConnectionField(lambda: PostsConnection)
 
     def resolve_followers_count(instance, info):
         return instance.followers_count
@@ -26,21 +27,31 @@ class User(SQLAlchemyObjectType):
     def resolve_following_count(instance, info):
         return instance.following_count
 
-    def resolve_followers(instance, info):
+    def resolve_followers(instance, info, **kwargs):
         return instance.followers
 
-    def resolve_following(instance, info):
+    def resolve_following(instance, info, **kwargs):
         return instance.following
 
+    def resolve_posts(instance, info, **kwargs):
+        return instance.posts
 
-class FollowersConnection(graphene.Connection):
+
+class FollowersConnection(relay.Connection):
     class Meta:
         node = User
 
 
-class FollowingConnection(graphene.Connection):
+class FollowingConnection(relay.Connection):
     class Meta:
         node = User
+
+
+class PostsConnection(relay.Connection):
+    class Meta:
+        from .post_type import Post
+
+        node = Post
 
 
 class RegisterUser(graphene.Mutation):

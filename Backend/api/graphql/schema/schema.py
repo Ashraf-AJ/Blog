@@ -1,8 +1,8 @@
 from graphene import relay, ObjectType, Schema, ID
-from . import user_type, auth_type
+from . import user_type, auth_type, post_type
 
 
-class Query(user_type.Query, ObjectType):
+class Query(post_type.Query, user_type.Query, ObjectType):
     node = relay.Node.Field(id=ID())
 
 
