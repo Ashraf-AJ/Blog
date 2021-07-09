@@ -28,3 +28,9 @@ def save(obj):
 def create(model, **data):
     obj = model(**data)
     return obj
+
+
+def update(obj, **kwargs):
+    for attr, val in kwargs.items():
+        setattr(obj, attr, val)
+    save(obj)

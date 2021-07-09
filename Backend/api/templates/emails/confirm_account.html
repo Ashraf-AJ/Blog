@@ -1,0 +1,6 @@
+<p>Dear {{ user.name }},</p>
+<p>Welcome to <b>Blog</b>!</p>
+<p>To confirm your account please <a href="{{ url_for('index', token=token, _external=True) }}">click here</a>.</p>
+<p>Sincerely,</p>
+<p>The Blog Team</p>
+<p><small>Note: replies to this email address are not monitored.</small></p>
