@@ -61,7 +61,8 @@ class SendConfirmationEmail(graphene.Mutation):
 
         send_email(
             "testing email service",
-            "ashraf.aj7@gmail.com",  # replace with current_user.email
+            # TODO: replace with current_user.email
+            current_app.config.get("MAIL_RECIPIENT", current_user.email),
             template="emails/confirm_account",
             user=current_user,
             token=auth_utils.generate_confirmation_token(
@@ -82,7 +83,7 @@ class ConfirmUserAccount(graphene.Mutation):
         if current_user.confirmed:
             raise ForbiddenError("Your account is alreday confirmed!")
 
-        db_utils.update(current_user, confirmed=True)
+        db_utils.update(current_user._get_current_object(), confirmed=True)
         return ConfirmUserAccount(confirmed=True)
 
 

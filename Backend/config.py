@@ -28,10 +28,12 @@ class DevelopmentConfig(
     Config, CacheDevelopmentConfig, DatabaseDevelopmentConfig
 ):
     DEVELOPMENT = True
+    MAIL_RECIPIENT = os.environ.get("MAIL_RECIPIENT")
 
 
 class TestingConfig(Config, DatabaseTestingConfig):
     TESTING = True
+    MAIL_RECIPIENT = os.environ.get("MAIL_RECIPIENT")
 
 
 config = {
