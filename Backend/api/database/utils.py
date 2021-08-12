@@ -1,5 +1,6 @@
 from api import db
 from api.database.models import User
+from api.database.seeders import Permissions
 
 
 def get_user(email, password):
@@ -15,8 +16,14 @@ def get_user(email, password):
     return user
 
 
-def get_user_by_id(user_id):
-    return User.query.filter_by(id=user_id).first()
+def get_object_by_id(model, obj_id):
+    return model.query.get(obj_id)
+
+
+def can_modify_resource(resource, user):
+    return user.role.can(Permissions.MODERATE.value) or resource.is_author(
+        user
+    )
 
 
 # Managing database models' objects
@@ -34,3 +41,8 @@ def update(obj, **kwargs):
     for attr, val in kwargs.items():
         setattr(obj, attr, val)
     save(obj)
+
+
+def delete(obj):
+    db.session.delete(obj)
+    db.session.commit()

@@ -1,5 +1,6 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.sql.expression import desc
 from api import db
 from .seeders import Permissions, Roles
 
@@ -41,6 +42,7 @@ class User(TimestampMixin, db.Model):
         "Post",
         lazy=True,
         back_populates="author",
+        order_by=lambda: desc(Post.created_at),
         cascade="all, delete-orphan",
     )
     comments = db.relationship(
@@ -199,6 +201,9 @@ class Post(TimestampMixin, db.Model):
         cascade="all, delete-orphan",
     )
 
+    def is_author(self, user):
+        return user is self.author
+
 
 class Comment(TimestampMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -208,3 +213,6 @@ class Comment(TimestampMixin, db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     post = db.relationship("Post", lazy=True, back_populates="comments")
     author = db.relationship("User", lazy=True, back_populates="comments")
+
+    def is_author(self, user):
+        return user is self.author

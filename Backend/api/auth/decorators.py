@@ -1,5 +1,5 @@
 from functools import wraps
-from flask_jwt_extended import verify_jwt_in_request
+from flask_jwt_extended import verify_jwt_in_request, current_user
 from api.errors import UnauthorizedError
 
 # rewrite `jwt_required` decorator to add graphql error handling
@@ -41,6 +41,22 @@ def token_required(optional=False, fresh=False, refresh=False, locations=None):
                 verify_jwt_in_request(optional, fresh, refresh, locations)
             except Exception as e:
                 raise UnauthorizedError(e.args[0])
+            else:
+                return fn(*args, **kwargs)
+
+        return decorator
+
+    return wrapper
+
+
+def has_permission(permission):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args, **kwargs):
+            if not current_user.role.can(permission):
+                raise UnauthorizedError(
+                    "You don't have a permission to perform this action"
+                )
             else:
                 return fn(*args, **kwargs)
 
