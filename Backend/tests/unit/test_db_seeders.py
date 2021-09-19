@@ -1,6 +1,6 @@
 import pytest
-from api.models import Permission, Role, role_permission
-from api.utils import (
+from api.database.models import Permission, Role, role_permission
+from api.database.seeders import (
     Roles,
     Permissions,
     get_model_object,
@@ -25,6 +25,16 @@ def PermissionModel(db):
     yield Permission
     Permission.query.delete()
     db.session.commit()
+
+
+def test_permissions_values():
+    for permission in Permissions:
+        assert permission.name == permission.value
+
+
+def test_roles_values():
+    for role in Roles:
+        assert role.name == role.value
 
 
 def test_get_model_object(RoleModel, cache):

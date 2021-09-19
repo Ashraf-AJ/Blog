@@ -1,6 +1,6 @@
 import pytest
-from api.utils import Roles, insert_roles_permissions
-from api.models import User, Follow, Role, Permission
+from api.database.seeders import Roles, insert_roles_permissions
+from api.database.models import User, Follow, Role, Permission
 
 
 @pytest.fixture(scope="module")
@@ -91,3 +91,35 @@ def test_user_unfollow(FollowModel, users):
     assert data is None
     assert u1.is_following(u2) is False
     assert u2.is_followed_by(u1) is False
+
+
+def test_user_update_timestamp(db, users):
+    u1, u2 = users
+    assert u1.updated_at is None
+    assert u2.updated_at is None
+
+    u1.name = "updated"
+    db.session.add(u1)
+    db.session.commit()
+
+    assert u1.name == "updated"
+    assert u1.updated_at is not None
+    assert u2.updated_at is None
+
+
+def test_followers_count(users):
+    u1, u2 = users
+
+    u1.follow(u2)
+
+    assert u2.followers_count == 1
+    assert u1.followers_count == 0
+
+
+def test_following_count(users):
+    u1, u2 = users
+
+    u1.follow(u2)
+
+    assert u1.following_count == 1
+    assert u2.following_count == 0
